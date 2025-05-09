@@ -10,8 +10,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging; 
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -66,19 +65,19 @@ public class PlainNotificationTokenPlugin extends BroadcastReceiver implements F
     @Override
     public void onMethodCall(final @NonNull MethodCall call, final @NonNull Result result) {
         if (call.method.equals("getToken")) {
-            FirebaseInstanceId.getInstance()
-                    .getInstanceId()
+            FirebaseMessaging.getInstance()
+                    .getToken()
                     .addOnCompleteListener(
-                            new OnCompleteListener<InstanceIdResult>() {
+                            new OnCompleteListener<String>() {
                                 @Override
-                                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                public void onComplete(@NonNull Task<String> task) {
                                     if (!task.isSuccessful()) {
                                         Log.w(TAG, "getToken, error fetching instanceID: ", task.getException());
                                         result.success(null);
                                         return;
                                     }
 
-                                    result.success(task.getResult().getToken());
+                                    result.success(task.getResult());
                                 }
                             });
         } else {

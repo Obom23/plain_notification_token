@@ -22,7 +22,8 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 33
+    namespace 'net.kikuchy.plain_notification_token'
 
     defaultConfig {
         minSdkVersion 16
@@ -32,7 +33,7 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        implementation 'com.google.firebase:firebase-messaging:18.0.0'
+        implementation 'com.google.firebase:firebase-messaging:23.4.0'
         implementation 'androidx.annotation:annotation:1.0.0'
         implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     }
