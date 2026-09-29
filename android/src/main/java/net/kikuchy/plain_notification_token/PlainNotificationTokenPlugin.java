@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging; 
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -18,7 +17,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * PlainNotificationTokenPlugin
@@ -28,10 +26,6 @@ public class PlainNotificationTokenPlugin extends BroadcastReceiver implements F
     private MethodChannel methodChannel;
     
     public PlainNotificationTokenPlugin() {}
-
-    public static void registerWith(Registrar registrar) {
-        new PlainNotificationTokenPlugin().onAttached(registrar.context(), registrar.messenger());
-    }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
@@ -53,14 +47,6 @@ public class PlainNotificationTokenPlugin extends BroadcastReceiver implements F
     }
 
     static final String TAG = PlainNotificationTokenPlugin.class.getSimpleName();
-
-    private String lastToken = null;
-    private MethodChannel channel;
-
-    private PlainNotificationTokenPlugin(MethodChannel channel, Registrar registrar) {
-        this.channel = channel;
-        FirebaseApp.initializeApp(registrar.context());
-    }
 
     @Override
     public void onMethodCall(final @NonNull MethodCall call, final @NonNull Result result) {
@@ -95,7 +81,9 @@ public class PlainNotificationTokenPlugin extends BroadcastReceiver implements F
 
         if (action.equals(NewTokenReceiveService.ACTION_TOKEN)) {
             String token = intent.getStringExtra(NewTokenReceiveService.EXTRA_TOKEN);
-            channel.invokeMethod("onToken", token);
+            if (methodChannel != null) {
+                methodChannel.invokeMethod("onToken", token);
+            }
         }
     }
 }
